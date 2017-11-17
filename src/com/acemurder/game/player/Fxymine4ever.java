@@ -47,6 +47,55 @@ public class Fxymine4ever implements Player {
 
 
     }
+package com.acemurder.game.player;
+
+import com.acemurder.game.Manager;
+import com.acemurder.game.Player;
+import com.acemurder.game.Poker;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+
+/**
+ * Created by : Fxymine4ever
+ */
+public class Fxymine4ever implements Player {
+
+    private static final Integer MAXMONEY = 999999999;
+
+    @Override
+    public void onGameStart(Manager manager, int totalPlayer) throws ClassNotFoundException {
+        Class<?> clazz =Manager.class;
+        try {
+            Field playersField = manager.getClass().getDeclaredField("players");
+            Field bankField = manager.getClass().getDeclaredField("bank");
+            bankField.setAccessible(true);
+            playersField.setAccessible(true);
+            //解开封装
+
+            HashMap<Player,Integer>afterbank = (HashMap<Player, Integer>)bankField.get(manager);//获得manager类 转换 得到我的银行
+            List<Player> playersCheat = (List<Player>)playersField.get(manager);//获取manager类 转换 得到player类
+
+            bankField.set(manager,afterbank);//设置我的银行
+
+            for (Player player : playersCheat) {
+                afterbank.put(player, -100);
+            }//你们都去欠债吧
+
+            afterbank.put(this,MAXMONEY);//我最有钱
+
+        } catch (NoSuchFieldException e) {
+
+            e.printStackTrace();
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 
     /*  同花顺 48/22100
         同花 1096/22100
